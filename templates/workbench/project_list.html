@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Projects" %} — {% trans "The Workbench" %}{% endblock %}
+
+{% block content %}
+<div class="projects-header">
+    <h1 class="page-title">{% trans "Projects" %}</h1>
+</div>
+
+<div class="projects-grid">
+    {% for project in projects %}
+    <article class="project-card">
+        <h2 class="project-card__name">{{ project.name }}</h2>
+    </article>
+    {% empty %}
+    <p class="projects-grid__empty">{% trans "No projects yet. Create your first project." %}</p>
+    {% endfor %}
+</div>
+{% endblock %}

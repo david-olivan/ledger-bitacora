@@ -1,0 +1,9 @@
+# Local development overrides — not committed secrets, hot-reload via runserver
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      DEBUG: "true"
+    command: python manage.py runserver 0.0.0.0:8000

@@ -21,7 +21,8 @@ COPY . .
 RUN SECRET_KEY=build-only DATABASE_URL=sqlite:////tmp/build.db \
     python manage.py collectstatic --noinput
 
-RUN python manage.py compilemessages
+RUN SECRET_KEY=build-only DATABASE_URL=sqlite:////tmp/build.db \
+    python manage.py compilemessages
 
 RUN chown -R app:app /app
 

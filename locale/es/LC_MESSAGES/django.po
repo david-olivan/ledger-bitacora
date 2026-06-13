@@ -297,3 +297,7 @@ msgstr "Los 8 colores están en uso. Elimina una etiqueta para liberar un color.
 
 msgid "Name"
 msgstr "Nombre"
+
+# Calendar / Gantt view
+msgid "No tasks with dates in this period."
+msgstr "No hay tareas con fechas en este período."

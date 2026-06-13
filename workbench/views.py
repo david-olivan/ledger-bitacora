@@ -28,6 +28,76 @@ def _get_bucket_with_tasks(bucket_pk):
     ).get(pk=bucket_pk)
 
 
+def _get_calendar_context(request, project):
+    import calendar as _cal
+    from datetime import date as _date
+
+    today = _date.today()
+    try:
+        year = int(request.GET.get('year', today.year))
+        month = int(request.GET.get('month', today.month))
+        if not (1 <= month <= 12):
+            month = today.month
+    except (ValueError, TypeError):
+        year, month = today.year, today.month
+
+    _, days_in_month = _cal.monthrange(year, month)
+    period_start = _date(year, month, 1)
+    period_end = _date(year, month, days_in_month)
+
+    tasks = (
+        Task.objects.filter(bucket__project=project, completed=False)
+        .exclude(start_date__isnull=True, end_date__isnull=True)
+        .filter(
+            Q(start_date__lte=period_end) | Q(start_date__isnull=True),
+            Q(end_date__gte=period_start) | Q(end_date__isnull=True),
+        )
+        .select_related('bucket')
+        .prefetch_related('task_tags__tag')
+        .order_by('start_date', 'end_date', 'created_at')
+    )
+
+    gantt_tasks = []
+    for task in tasks:
+        start = task.start_date or task.end_date
+        end = task.end_date or task.start_date
+        bar_start = max(start, period_start)
+        bar_end = min(end, period_end)
+        if bar_start > bar_end:
+            continue
+        first_tt = task.task_tags.first()
+        color = first_tt.tag.color if first_tt else 'brass'
+        left_pct = round((bar_start.day - 1) / days_in_month * 100, 2)
+        width_pct = round((bar_end.day - bar_start.day + 1) / days_in_month * 100, 2)
+        gantt_tasks.append({
+            'task': task,
+            'color': color,
+            'bar_left_pct': left_pct,
+            'bar_width_pct': width_pct,
+            'bucket_name': task.bucket.name,
+        })
+
+    if month == 1:
+        prev_year, prev_month = year - 1, 12
+    else:
+        prev_year, prev_month = year, month - 1
+    if month == 12:
+        next_year, next_month = year + 1, 1
+    else:
+        next_year, next_month = year, month + 1
+
+    return {
+        'gantt_year': year,
+        'gantt_month': month,
+        'gantt_month_name': _cal.month_name[month],
+        'gantt_days': list(range(1, days_in_month + 1)),
+        'gantt_tasks': gantt_tasks,
+        'gantt_prev': f'?view=calendar&year={prev_year}&month={prev_month}',
+        'gantt_next': f'?view=calendar&year={next_year}&month={next_month}',
+        'gantt_today': today,
+    }
+
+
 @login_required
 def project_list(request):
     projects = _annotated_projects(request.user)
@@ -84,7 +154,10 @@ def project_detail(request, pk):
         Prefetch('tasks', queryset=active_qs, to_attr='active_tasks'),
         Prefetch('tasks', queryset=completed_qs, to_attr='completed_tasks'),
     )
-    return render(request, 'workbench/project_detail.html', {'project': project, 'buckets': buckets, 'active_view': active_view})
+    ctx = {'project': project, 'buckets': buckets, 'active_view': active_view}
+    if active_view == 'calendar':
+        ctx.update(_get_calendar_context(request, project))
+    return render(request, 'workbench/project_detail.html', ctx)
 
 
 @login_required

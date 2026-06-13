@@ -3,6 +3,10 @@
 
 {% block title %}{{ project.name }} — {% trans "The Workbench" %}{% endblock %}
 
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="project-header">
     <a href="{% url 'workbench:project_list' %}" class="back-link">← {% trans "Projects" %}</a>
@@ -10,6 +14,7 @@
     <div class="view-switcher">
         <a href="?view=buckets" class="btn {% if active_view == 'buckets' %}btn--active{% endif %}">{% trans "Boards" %}</a>
         <a href="?view=calendar" class="btn {% if active_view == 'calendar' %}btn--active{% endif %}">{% trans "Calendar" %}</a>
+        <a href="{% url 'workbench:project_tags' project.pk %}" class="btn">{% trans "Tags" %}</a>
     </div>
 </div>
 
@@ -26,4 +31,32 @@
         <p class="task-editor-panel__placeholder">{% trans "Select a task to edit it." %}</p>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+    var reorderUrl = "{% url 'workbench:task_reorder' %}";
+    document.querySelectorAll('.bucket-column__tasks').forEach(function(el) {
+        Sortable.create(el, {
+            group: 'tasks',
+            animation: 150,
+            ghostClass: 'task-card--ghost',
+            onEnd: function(evt) {
+                if (evt.oldIndex === evt.newIndex && evt.from === evt.to) return;
+                var taskId = evt.item.id.replace('task-', '');
+                var bucketId = evt.to.closest('.bucket-column').id.replace('bucket-', '');
+                htmx.ajax('POST', reorderUrl, {
+                    swap: 'none',
+                    values: {
+                        task_id: taskId,
+                        bucket_id: bucketId,
+                        position: evt.newIndex
+                    }
+                });
+            }
+        });
+    });
+})();
+</script>
 {% endblock %}

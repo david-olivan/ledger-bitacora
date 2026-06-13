@@ -975,3 +975,151 @@ a:hover {
     font-family: var(--font-mono);
     font-style: italic;
 }
+
+/* ── Drag ghost ─────────────────────────────────────────────────────────── */
+
+.task-card--ghost {
+    opacity: 0.4;
+    background: var(--color-paper-dark);
+    border: 2px dashed var(--color-accent);
+}
+
+/* ── Section titles ─────────────────────────────────────────────────────── */
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-accent);
+    padding-bottom: var(--space-xs);
+}
+
+/* ── Tags list (management page) ────────────────────────────────────────── */
+
+.tags-list {
+    margin-bottom: var(--space-xl);
+    max-width: 640px;
+}
+
+.tag-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-paper-dark);
+}
+
+.tag-chip--large {
+    min-width: 80px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.tag-row__rename {
+    display: flex;
+    gap: var(--space-xs);
+    flex: 1;
+}
+
+.tag-row__input {
+    flex: 1;
+    padding: var(--space-xs) var(--space-sm);
+    border: 1px solid var(--color-accent);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink);
+    outline: none;
+}
+
+.tag-row__input:focus {
+    border-color: var(--color-accent-dark);
+}
+
+.tag-row__delete {
+    flex-shrink: 0;
+}
+
+/* ── Create tag form ────────────────────────────────────────────────────── */
+
+.create-tag-section {
+    max-width: 480px;
+}
+
+.create-tag-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.tag-name-input {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-accent);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    outline: none;
+}
+
+.tag-name-input:focus {
+    border-color: var(--color-accent-dark);
+}
+
+.create-tag-form .btn--primary {
+    width: auto;
+    padding: var(--space-sm) var(--space-lg);
+    margin-top: 0;
+}
+
+/* ── Color picker ───────────────────────────────────────────────────────── */
+
+.color-picker {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-top: var(--space-xs);
+}
+
+.color-picker__radio {
+    display: none;
+}
+
+.color-chip {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.15s, transform 0.1s;
+}
+
+.color-chip:hover {
+    transform: scale(1.1);
+}
+
+.color-picker__radio:checked + .color-chip {
+    border-color: var(--color-ink);
+    transform: scale(1.1);
+}
+
+.color-chip--gold      { background: linear-gradient(135deg, #D4AF37, #F5C842, #B8960C); }
+.color-chip--silver    { background: linear-gradient(135deg, #C0C0C0, #E8E8E8, #A8A8A8); }
+.color-chip--copper    { background: linear-gradient(135deg, #B87333, #D4905A, #8B5A1E); }
+.color-chip--brass     { background: linear-gradient(135deg, #B5A642, #D4C35A, #8B7D1E); }
+.color-chip--bronze    { background: linear-gradient(135deg, #CD7F32, #E09050, #9B5E1A); }
+.color-chip--gunmetal  { background: linear-gradient(135deg, #2A3439, #404E55, #1A252A); }
+.color-chip--rose_gold { background: linear-gradient(135deg, #B76E79, #D4909A, #8B4E5A); }
+.color-chip--pewter    { background: linear-gradient(135deg, #8A9BA8, #A8B8C5, #6A7B88); }
+
+.tags-all-used {
+    color: var(--color-ink-muted);
+    font-family: var(--font-mono);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: var(--space-md);
+}

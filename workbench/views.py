@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from django.db.models import Count, Max, Prefetch, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -192,3 +193,83 @@ def checklist_item_delete(request, pk):
     item = get_object_or_404(ChecklistItem, pk=pk, task__bucket__project__owner=request.user)
     item.delete()
     return HttpResponse(status=200)
+
+
+@login_required
+@require_POST
+def task_reorder(request):
+    task_id = request.POST.get('task_id')
+    bucket_id = request.POST.get('bucket_id')
+    try:
+        new_pos = int(request.POST.get('position', 0))
+    except (ValueError, TypeError):
+        new_pos = 0
+
+    task = get_object_or_404(Task, pk=task_id, bucket__project__owner=request.user)
+    new_bucket = get_object_or_404(Bucket, pk=bucket_id, project=task.bucket.project)
+    old_bucket_id = task.bucket_id
+
+    others = list(
+        Task.objects.filter(bucket=new_bucket, completed=False)
+        .exclude(pk=task.pk)
+        .order_by('position', 'created_at')
+    )
+    others.insert(new_pos, task)
+    for i, t in enumerate(others):
+        Task.objects.filter(pk=t.pk).update(bucket=new_bucket, position=i)
+
+    if old_bucket_id != new_bucket.pk:
+        for i, t in enumerate(
+            Task.objects.filter(bucket_id=old_bucket_id, completed=False).order_by('position', 'created_at')
+        ):
+            Task.objects.filter(pk=t.pk).update(position=i)
+
+    return HttpResponse(status=200)
+
+
+@login_required
+def project_tags(request, pk):
+    project = get_object_or_404(Project, pk=pk, owner=request.user)
+    tags = project.tags.all().order_by('color')
+    used_colors = set(tags.values_list('color', flat=True))
+    available_colors = [(c, label) for c, label in Tag.Color.choices if c not in used_colors]
+    return render(request, 'workbench/project_tags.html', {
+        'project': project,
+        'tags': tags,
+        'available_colors': available_colors,
+    })
+
+
+@login_required
+@require_POST
+def tag_create(request, project_pk):
+    project = get_object_or_404(Project, pk=project_pk, owner=request.user)
+    name = request.POST.get('name', '').strip()
+    color = request.POST.get('color', '')
+    valid_colors = dict(Tag.Color.choices)
+    if name and color in valid_colors:
+        try:
+            Tag.objects.create(project=project, name=name, color=color)
+        except IntegrityError:
+            pass
+    return redirect('workbench:project_tags', pk=project.pk)
+
+
+@login_required
+@require_POST
+def tag_update(request, pk):
+    tag = get_object_or_404(Tag, pk=pk, project__owner=request.user)
+    name = request.POST.get('name', '').strip()
+    if name:
+        tag.name = name
+        tag.save(update_fields=['name'])
+    return redirect('workbench:project_tags', pk=tag.project_id)
+
+
+@login_required
+@require_POST
+def tag_delete(request, pk):
+    tag = get_object_or_404(Tag, pk=pk, project__owner=request.user)
+    project_pk = tag.project_id
+    tag.delete()
+    return redirect('workbench:project_tags', pk=project_pk)

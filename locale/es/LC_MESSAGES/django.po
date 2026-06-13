@@ -266,3 +266,34 @@ msgstr "Vista de calendario próximamente."
 # Project creation — default bucket name
 msgid "En progreso"
 msgstr "En progreso"
+
+# Tag management
+msgid "Tag Management"
+msgstr "Gestión de etiquetas"
+
+msgid "Project tags"
+msgstr "Etiquetas del proyecto"
+
+msgid "New tag"
+msgstr "Nueva etiqueta"
+
+msgid "Tag name…"
+msgstr "Nombre de etiqueta…"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Create tag"
+msgstr "Crear etiqueta"
+
+msgid "Rename"
+msgstr "Renombrar"
+
+msgid "Delete this tag?"
+msgstr "¿Eliminar esta etiqueta?"
+
+msgid "All 8 colors are in use. Delete a tag to free up a color."
+msgstr "Los 8 colores están en uso. Elimina una etiqueta para liberar un color."
+
+msgid "Name"
+msgstr "Nombre"

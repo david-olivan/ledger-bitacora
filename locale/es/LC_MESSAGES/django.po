@@ -301,3 +301,7 @@ msgstr "Nombre"
 # Calendar / Gantt view
 msgid "No tasks with dates in this period."
 msgstr "No hay tareas con fechas en este período."
+
+# Default bucket created with new project
+msgid "In Progress"
+msgstr "En progreso"

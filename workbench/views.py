@@ -1,3 +1,6 @@
+import calendar as _cal
+from datetime import date as _date
+
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Count, Max, Prefetch, Q
@@ -29,9 +32,6 @@ def _get_bucket_with_tasks(bucket_pk):
 
 
 def _get_calendar_context(request, project):
-    import calendar as _cal
-    from datetime import date as _date
-
     today = _date.today()
     try:
         year = int(request.GET.get('year', today.year))
@@ -65,8 +65,8 @@ def _get_calendar_context(request, project):
         bar_end = min(end, period_end)
         if bar_start > bar_end:
             continue
-        first_tt = task.task_tags.first()
-        color = first_tt.tag.color if first_tt else 'brass'
+        tt_list = list(task.task_tags.all())
+        color = tt_list[0].tag.color if tt_list else 'brass'
         left_pct = round((bar_start.day - 1) / days_in_month * 100, 2)
         width_pct = round((bar_end.day - bar_start.day + 1) / days_in_month * 100, 2)
         gantt_tasks.append({
@@ -113,7 +113,7 @@ def project_create(request):
         project = form.save(commit=False)
         project.owner = request.user
         project.save()
-        Bucket.objects.create(project=project, name=_('En progreso'), order=0)
+        Bucket.objects.create(project=project, name=_('In Progress'), order=0)
         return redirect('workbench:project_list')
     projects = _annotated_projects(request.user)
     return render(request, 'workbench/project_list.html', {'projects': projects, 'form': form})
@@ -171,7 +171,7 @@ def task_create(request, bucket_pk):
         max_pos = bucket.tasks.aggregate(m=Max('position'))['m'] or 0
         task.position = max_pos + 1
         task.save()
-        return render(request, 'workbench/partials/task_card.html', {'task': task})
+        return render(request, 'workbench/partials/bucket_column.html', {'bucket': _get_bucket_with_tasks(bucket.pk)})
     return HttpResponse(status=422)
 
 

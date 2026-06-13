@@ -25,8 +25,8 @@
 
     <form class="add-task-form"
           hx-post="{% url 'workbench:task_create' bucket.pk %}"
-          hx-target="#tasks-list-{{ bucket.pk }}"
-          hx-swap="beforeend"
+          hx-target="#bucket-{{ bucket.pk }}"
+          hx-swap="outerHTML"
           hx-on::after-request="this.reset()">
         {% csrf_token %}
         <input type="text" name="title" placeholder="{% trans "New task…" %}"

@@ -407,6 +407,10 @@ a:hover {
     );
 }
 
+.gauge--count {
+    background: var(--color-paper-dark);
+}
+
 .gauge--arc::after {
     content: '';
     position: absolute;

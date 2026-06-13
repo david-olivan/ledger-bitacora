@@ -2,7 +2,7 @@
 <div class="task-editor">
     <div class="task-editor__header">
         <h3 class="task-editor__title">{% trans "Edit Task" %}</h3>
-        <button class="task-editor__close"
+        <button class="task-editor__close" type="button"
                 onclick="document.getElementById('task-editor-panel').innerHTML='<p class=\'task-editor-panel__placeholder\'>{% trans "Select a task to edit it." %}</p>'">✕</button>
     </div>
 
@@ -20,6 +20,26 @@
         <div class="form-field">
             <label for="id_notes">{% trans "Notes" %}</label>
             {{ form.notes }}
+        </div>
+
+        <div class="checklist-section form-field">
+            <label>{% trans "Checklist" %}</label>
+            <ul class="checklist" id="checklist-{{ task.pk }}">
+                {% for item in checklist_items %}
+                    {% include "workbench/partials/checklist_item.html" %}
+                {% endfor %}
+            </ul>
+            <div class="add-checklist-form">
+                <input type="text" id="checklist-text-{{ task.pk }}" name="text"
+                       placeholder="{% trans "Add item…" %}" class="checklist-add-input">
+                <button type="button"
+                        hx-post="{% url 'workbench:checklist_item_add' task.pk %}"
+                        hx-target="#checklist-{{ task.pk }}"
+                        hx-swap="beforeend"
+                        hx-include="#checklist-text-{{ task.pk }}"
+                        hx-on::after-request="document.getElementById('checklist-text-{{ task.pk }}').value=''"
+                        class="btn btn--small">+</button>
+            </div>
         </div>
 
         <div class="form-field form-field--dates">
@@ -52,24 +72,6 @@
             <button type="submit" class="btn btn--primary">{% trans "Save" %}</button>
         </div>
     </form>
-
-    <div class="checklist-section form-field">
-        <label>{% trans "Checklist" %}</label>
-        <ul class="checklist" id="checklist-{{ task.pk }}">
-            {% for item in checklist_items %}
-                {% include "workbench/partials/checklist_item.html" %}
-            {% endfor %}
-        </ul>
-        <form class="add-checklist-form"
-              hx-post="{% url 'workbench:checklist_item_add' task.pk %}"
-              hx-target="#checklist-{{ task.pk }}"
-              hx-swap="beforeend"
-              hx-on::after-request="this.reset()">
-            {% csrf_token %}
-            <input type="text" name="text" placeholder="{% trans "Add item…" %}" class="checklist-add-input">
-            <button type="submit" class="btn btn--small">+</button>
-        </form>
-    </div>
 
     <div class="task-editor__danger">
         <form hx-post="{% url 'workbench:task_complete' task.pk %}"

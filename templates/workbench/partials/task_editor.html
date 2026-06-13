@@ -1,0 +1,91 @@
+{% load i18n %}
+<div class="task-editor">
+    <div class="task-editor__header">
+        <h3 class="task-editor__title">{% trans "Edit Task" %}</h3>
+        <button class="task-editor__close"
+                onclick="document.getElementById('task-editor-panel').innerHTML='<p class=\'task-editor-panel__placeholder\'>{% trans "Select a task to edit it." %}</p>'">✕</button>
+    </div>
+
+    <form hx-post="{% url 'workbench:task_update' task.pk %}"
+          hx-target="#task-{{ task.pk }}"
+          hx-swap="outerHTML"
+          class="task-editor__form">
+        {% csrf_token %}
+
+        <div class="form-field">
+            <label for="id_title">{% trans "Title" %}</label>
+            {{ form.title }}
+        </div>
+
+        <div class="form-field">
+            <label for="id_notes">{% trans "Notes" %}</label>
+            {{ form.notes }}
+        </div>
+
+        <div class="form-field form-field--dates">
+            <div>
+                <label for="id_start_date">{% trans "Start date" %}</label>
+                {{ form.start_date }}
+            </div>
+            <div>
+                <label for="id_end_date">{% trans "End date" %}</label>
+                {{ form.end_date }}
+            </div>
+        </div>
+
+        {% if tags %}
+        <div class="form-field">
+            <label>{% trans "Tags" %} ({% trans "max" %} 3)</label>
+            <div class="tag-picker">
+                {% for tag in tags %}
+                <label class="tag-picker__option">
+                    <input type="checkbox" name="tags" value="{{ tag.pk }}"
+                           {% if tag.pk in task_tag_ids %}checked{% endif %}>
+                    <span class="tag-chip tag-chip--{{ tag.color }}">{{ tag.name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="task-editor__actions">
+            <button type="submit" class="btn btn--primary">{% trans "Save" %}</button>
+        </div>
+    </form>
+
+    <div class="checklist-section form-field">
+        <label>{% trans "Checklist" %}</label>
+        <ul class="checklist" id="checklist-{{ task.pk }}">
+            {% for item in checklist_items %}
+                {% include "workbench/partials/checklist_item.html" %}
+            {% endfor %}
+        </ul>
+        <form class="add-checklist-form"
+              hx-post="{% url 'workbench:checklist_item_add' task.pk %}"
+              hx-target="#checklist-{{ task.pk }}"
+              hx-swap="beforeend"
+              hx-on::after-request="this.reset()">
+            {% csrf_token %}
+            <input type="text" name="text" placeholder="{% trans "Add item…" %}" class="checklist-add-input">
+            <button type="submit" class="btn btn--small">+</button>
+        </form>
+    </div>
+
+    <div class="task-editor__danger">
+        <form hx-post="{% url 'workbench:task_complete' task.pk %}"
+              hx-target="#bucket-{{ task.bucket_id }}"
+              hx-swap="outerHTML">
+            {% csrf_token %}
+            <button type="submit" class="btn">
+                {% if task.completed %}{% trans "Mark Incomplete" %}{% else %}{% trans "Mark Complete" %}{% endif %}
+            </button>
+        </form>
+        <button hx-delete="{% url 'workbench:task_delete' task.pk %}"
+                hx-target="#task-{{ task.pk }}"
+                hx-swap="delete"
+                hx-confirm="{% trans "Delete this task?" %}"
+                class="btn btn--danger">
+            {% trans "Delete" %}
+        </button>
+    </div>
+</div>

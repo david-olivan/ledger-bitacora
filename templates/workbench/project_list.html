@@ -8,10 +8,51 @@
     <h1 class="page-title">{% trans "Projects" %}</h1>
 </div>
 
-<div class="projects-grid">
+<form class="create-project-form" method="post" action="{% url 'workbench:project_create' %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="{% trans "New project name…" %}" required
+           class="create-project-form__input"
+           value="{{ form.name.value|default:'' }}">
+    <button type="submit" class="btn">{% trans "Create" %}</button>
+</form>
+{% if form.name.errors %}
+<p class="form-error">{{ form.name.errors.0 }}</p>
+{% endif %}
+
+<div class="projects-grid" id="projects-grid">
     {% for project in projects %}
-    <article class="project-card">
-        <h2 class="project-card__name">{{ project.name }}</h2>
+    <article class="project-card {% if project.pinned %}project-card--pinned{% endif %}">
+        <a href="{% url 'workbench:project_detail' project.pk %}" class="project-card__name">{{ project.name }}</a>
+
+        <div class="project-card__gauges">
+            {% widthratio project.done_tasks project.total_tasks|default:1 360 as gauge_deg %}
+            <div class="gauge gauge--arc" style="--gauge-deg: {{ gauge_deg }}deg" title="{% trans 'Completed tasks' %}">
+                <span class="gauge__label">{{ project.done_tasks }}/{{ project.total_tasks }}</span>
+            </div>
+            <div class="gauge gauge--count" title="{% trans 'Active tasks' %}">
+                <span class="gauge__label">{{ project.total_tasks }}</span>
+                <span class="gauge__sublabel">{% trans "tasks" %}</span>
+            </div>
+            <div class="gauge gauge--count" title="{% trans 'Buckets' %}">
+                <span class="gauge__label">{{ project.bucket_count }}</span>
+                <span class="gauge__sublabel">{% trans "cols" %}</span>
+            </div>
+        </div>
+
+        <div class="project-card__actions">
+            <form method="post" action="{% url 'workbench:project_pin' project.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn--icon {% if project.pinned %}btn--active{% endif %}"
+                        title="{% if project.pinned %}{% trans 'Unpin' %}{% else %}{% trans 'Pin' %}{% endif %}">
+                    {% if project.pinned %}★{% else %}☆{% endif %}
+                </button>
+            </form>
+            <form method="post" action="{% url 'workbench:project_delete' project.pk %}"
+                  onsubmit="return confirm('{% trans "Delete this project and all its data?" %}')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn--icon btn--danger" title="{% trans 'Delete' %}">✕</button>
+            </form>
+        </div>
     </article>
     {% empty %}
     <p class="projects-grid__empty">{% trans "No projects yet. Create your first project." %}</p>

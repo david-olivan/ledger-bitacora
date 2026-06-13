@@ -151,3 +151,118 @@ msgstr "etiqueta de tarea"
 
 msgid "task tags"
 msgstr "etiquetas de tarea"
+
+# Project list — create form
+msgid "New project name…"
+msgstr "Nombre del nuevo proyecto…"
+
+msgid "Create"
+msgstr "Crear"
+
+# Project list — gauges
+msgid "Completed tasks"
+msgstr "Tareas completadas"
+
+msgid "Active tasks"
+msgstr "Tareas activas"
+
+msgid "Buckets"
+msgstr "Columnas"
+
+msgid "cols"
+msgstr "cols"
+
+# Project list — card actions
+msgid "Pin"
+msgstr "Anclar"
+
+msgid "Unpin"
+msgstr "Desanclar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Delete this project and all its data?"
+msgstr "¿Eliminar este proyecto y todos sus datos?"
+
+# Project detail — header
+msgid "Boards"
+msgstr "Tableros"
+
+msgid "Calendar"
+msgstr "Calendario"
+
+# Bucket view
+msgid "No active tasks."
+msgstr "No hay tareas activas."
+
+msgid "No columns yet."
+msgstr "Todavía no hay columnas."
+
+msgid "New task…"
+msgstr "Nueva tarea…"
+
+# Completed section
+msgid "Completed"
+msgstr "Completadas"
+
+# Task card
+msgid "Mark incomplete"
+msgstr "Marcar como pendiente"
+
+msgid "Mark complete"
+msgstr "Marcar como completada"
+
+msgid "Edit"
+msgstr "Editar"
+
+# Task editor
+msgid "Edit Task"
+msgstr "Editar tarea"
+
+msgid "Select a task to edit it."
+msgstr "Selecciona una tarea para editarla."
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Start date"
+msgstr "Fecha de inicio"
+
+msgid "End date"
+msgstr "Fecha de fin"
+
+msgid "Tags"
+msgstr "Etiquetas"
+
+msgid "max"
+msgstr "máx"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Checklist"
+msgstr "Lista de verificación"
+
+msgid "Add item…"
+msgstr "Añadir elemento…"
+
+msgid "Mark Incomplete"
+msgstr "Marcar como pendiente"
+
+msgid "Mark Complete"
+msgstr "Marcar como completada"
+
+msgid "Delete this task?"
+msgstr "¿Eliminar esta tarea?"
+
+# Calendar placeholder
+msgid "Calendar view coming soon."
+msgstr "Vista de calendario próximamente."
+
+# Project creation — default bucket name
+msgid "En progreso"
+msgstr "En progreso"

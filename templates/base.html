@@ -1,0 +1,37 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'es' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "The Workbench" %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="workbench-app">
+
+    {% if user.is_authenticated %}
+    <aside class="sidebar">
+        <div class="sidebar__logo">
+            <a href="{% url 'workbench:project_list' %}" class="sidebar__app-name">{% trans "The Workbench" %}</a>
+        </div>
+        <nav class="sidebar__nav">
+            <a href="{% url 'workbench:project_list' %}" class="sidebar__link">{% trans "Projects" %}</a>
+        </nav>
+        <div class="sidebar__bottom">
+            <span class="sidebar__user">{{ user.username }}</span>
+            <form method="post" action="{% url 'workbench:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="sidebar__logout">{% trans "Log out" %}</button>
+            </form>
+        </div>
+    </aside>
+    {% endif %}
+
+    <main class="main-content {% if not user.is_authenticated %}main-content--full{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

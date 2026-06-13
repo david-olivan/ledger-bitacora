@@ -1,0 +1,329 @@
+/* The Workbench — main stylesheet */
+/* Aesthetic: 1920s inventor's workbench / light steampunk-solarpunk */
+
+:root {
+    /* Paper */
+    --color-paper:      #F5F0E8;
+    --color-paper-dark: #EDE8D8;
+    --color-paper-shadow: rgba(42, 31, 20, 0.08);
+
+    /* Ink */
+    --color-ink:        #2A1F14;
+    --color-ink-muted:  #6B5B45;
+
+    /* Accent (brass) */
+    --color-accent:     #B5A642;
+    --color-accent-dark:#8B7D1E;
+    --color-accent-light:#D4C35A;
+
+    /* Metallic tag gradients */
+    --color-gold:       linear-gradient(135deg, #D4AF37, #F5C842, #B8960C);
+    --color-silver:     linear-gradient(135deg, #C0C0C0, #E8E8E8, #A8A8A8);
+    --color-copper:     linear-gradient(135deg, #B87333, #D4905A, #8B5A1E);
+    --color-brass:      linear-gradient(135deg, #B5A642, #D4C35A, #8B7D1E);
+    --color-bronze:     linear-gradient(135deg, #CD7F32, #E09050, #9B5E1A);
+    --color-gunmetal:   linear-gradient(135deg, #2A3439, #404E55, #1A252A);
+    --color-rose_gold:  linear-gradient(135deg, #B76E79, #D4909A, #8B4E5A);
+    --color-pewter:     linear-gradient(135deg, #8A9BA8, #A8B8C5, #6A7B88);
+
+    /* Typography */
+    --font-heading: 'Special Elite', 'Courier Prime', 'Courier New', monospace;
+    --font-body:    Georgia, 'Times New Roman', serif;
+    --font-mono:    'Courier Prime', 'Courier New', monospace;
+
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+
+    /* Sidebar */
+    --sidebar-width: 220px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+
+body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+}
+
+a {
+    color: var(--color-accent-dark);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+
+.workbench-app {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: var(--color-paper-dark);
+    border-right: 2px solid var(--color-accent);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg) var(--space-md);
+    flex-shrink: 0;
+}
+
+.main-content {
+    flex: 1;
+    padding: var(--space-xl);
+    overflow-y: auto;
+}
+
+.main-content--full {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+
+.sidebar__logo {
+    margin-bottom: var(--space-xl);
+}
+
+.sidebar__app-name {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--color-accent-dark);
+    display: block;
+    line-height: 1.2;
+}
+
+.sidebar__app-name:hover {
+    text-decoration: none;
+    color: var(--color-accent);
+}
+
+.sidebar__nav {
+    flex: 1;
+}
+
+.sidebar__link {
+    display: block;
+    padding: var(--space-sm) var(--space-sm);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    border-left: 2px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.sidebar__link:hover {
+    color: var(--color-accent-dark);
+    border-left-color: var(--color-accent);
+    text-decoration: none;
+}
+
+.sidebar__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    border-top: 1px solid var(--color-accent);
+    padding-top: var(--space-md);
+}
+
+.sidebar__user {
+    font-size: 0.8rem;
+    color: var(--color-ink-muted);
+    font-family: var(--font-mono);
+}
+
+.sidebar__logout {
+    background: none;
+    border: 1px solid var(--color-accent);
+    color: var(--color-ink-muted);
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-align: left;
+    width: 100%;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.sidebar__logout:hover {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
+.btn {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1px solid var(--color-accent);
+    background: transparent;
+    color: var(--color-ink);
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+    text-decoration: none;
+}
+
+.btn--primary {
+    background-color: var(--color-accent-dark);
+    color: var(--color-paper);
+    border-color: var(--color-accent-dark);
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-top: var(--space-sm);
+}
+
+.btn--primary:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+/* ── Forms ──────────────────────────────────────────────────────────────── */
+
+.form-field {
+    margin-bottom: var(--space-md);
+}
+
+.form-field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-xs);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-accent);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    outline: none;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+    border-color: var(--color-accent-dark);
+    box-shadow: 0 0 0 2px var(--color-paper-shadow);
+}
+
+/* ── Login ──────────────────────────────────────────────────────────────── */
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10vh;
+    padding: var(--space-xl);
+    background: var(--color-paper-dark);
+    border: 2px solid var(--color-accent);
+    box-shadow: 4px 4px 0 var(--color-accent-dark);
+}
+
+.login-title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--color-accent-dark);
+    margin-bottom: var(--space-lg);
+    text-align: center;
+    line-height: 1.1;
+}
+
+.login-error {
+    color: #8B1A1A;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm);
+    border: 1px solid #8B1A1A;
+    background: rgba(139, 26, 26, 0.05);
+}
+
+.login-form input {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-accent);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-ink);
+}
+
+/* ── Page title ─────────────────────────────────────────────────────────── */
+
+.page-title {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    color: var(--color-ink);
+    margin-bottom: var(--space-lg);
+}
+
+/* ── Projects grid ──────────────────────────────────────────────────────── */
+
+.projects-header {
+    margin-bottom: var(--space-lg);
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+}
+
+.project-card {
+    background: var(--color-paper-dark);
+    border: 1px solid var(--color-accent);
+    padding: var(--space-lg);
+    box-shadow: 2px 2px 0 var(--color-paper-shadow);
+    transition: box-shadow 0.15s;
+}
+
+.project-card:hover {
+    box-shadow: 3px 3px 0 var(--color-accent);
+}
+
+.project-card__name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-ink);
+}
+
+.projects-grid__empty {
+    grid-column: 1 / -1;
+    color: var(--color-ink-muted);
+    font-style: italic;
+    font-family: var(--font-mono);
+}

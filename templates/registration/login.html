@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Log in" %} — {% trans "The Workbench" %}{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1 class="login-title">{% trans "The Workbench" %}</h1>
+    {% if form.errors %}
+    <p class="login-error">{% trans "Incorrect credentials. Please try again." %}</p>
+    {% endif %}
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-field">
+            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+            {{ form.username }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+            {{ form.password }}
+        </div>
+        <button type="submit" class="btn btn--primary">{% trans "Log in" %}</button>
+    </form>
+</div>
+{% endblock %}

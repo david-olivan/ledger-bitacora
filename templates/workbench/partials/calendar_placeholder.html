@@ -1,0 +1,32 @@
+{% load i18n %}
+<div class="gantt">
+    <div class="gantt__nav">
+        <a href="{{ gantt_prev }}" class="btn btn--small">&#8592;</a>
+        <h2 class="gantt__period">{{ gantt_month_name }} {{ gantt_year }}</h2>
+        <a href="{{ gantt_next }}" class="btn btn--small">&#8594;</a>
+    </div>
+
+    {% if gantt_tasks %}
+    <div class="gantt__chart">
+        <div class="gantt__header-row">
+            <div class="gantt__label-col"></div>
+            <div class="gantt__days-ruler">
+                {% for day in gantt_days %}
+                <span class="gantt__day-tick{% if day == gantt_today.day and gantt_month == gantt_today.month and gantt_year == gantt_today.year %} gantt__day-tick--today{% endif %}">{{ day }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% for item in gantt_tasks %}
+        <div class="gantt__row">
+            <div class="gantt__label-col" title="{{ item.bucket_name }}">{{ item.task.title }}</div>
+            <div class="gantt__bar-area">
+                <div class="gantt__bar tag-chip--{{ item.color }}"
+                     style="left: {{ item.bar_left_pct }}%; width: {{ item.bar_width_pct }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="gantt__empty">{% trans "No tasks with dates in this period." %}</p>
+    {% endif %}
+</div>

@@ -1,0 +1,8 @@
+{% load i18n %}
+<div class="buckets-container">
+    {% for bucket in buckets %}
+        {% include "workbench/partials/bucket_column.html" %}
+    {% empty %}
+        <p class="buckets-empty">{% trans "No columns yet." %}</p>
+    {% endfor %}
+</div>

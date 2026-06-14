@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Tags" %} — {{ project.name }} — {% trans "The Workbench" %}{% endblock %}
+
+{% block content %}
+<div class="project-header">
+    <a href="{% url 'workbench:project_detail' project.pk %}" class="back-link">← {{ project.name }}</a>
+    <h1 class="page-title">{% trans "Tag Management" %}</h1>
+</div>
+
+{% if tags %}
+<section class="tags-list">
+    <h2 class="section-title">{% trans "Project tags" %}</h2>
+    {% for tag in tags %}
+    <div class="tag-row" id="tag-{{ tag.pk }}">
+        <span class="tag-chip tag-chip--{{ tag.color }} tag-chip--large">{{ tag.name }}</span>
+        <form method="post" action="{% url 'workbench:tag_update' tag.pk %}" class="tag-row__rename">
+            {% csrf_token %}
+            <input type="text" name="name" value="{{ tag.name }}" class="tag-row__input" required>
+            <button type="submit" class="btn btn--small">{% trans "Rename" %}</button>
+        </form>
+        <form method="post" action="{% url 'workbench:tag_delete' tag.pk %}" class="tag-row__delete"
+              onsubmit="return confirm('{% trans "Delete this tag?" %}')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn--icon btn--danger" title="{% trans 'Delete' %}">✕</button>
+        </form>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+
+{% if available_colors %}
+<section class="create-tag-section">
+    <h2 class="section-title">{% trans "New tag" %}</h2>
+    <form method="post" action="{% url 'workbench:tag_create' project.pk %}" class="create-tag-form">
+        {% csrf_token %}
+        <div class="form-field">
+            <label for="tag-name">{% trans "Name" %}</label>
+            <input type="text" id="tag-name" name="name" class="tag-name-input" required
+                   placeholder="{% trans 'Tag name…' %}">
+        </div>
+        <div class="form-field">
+            <label>{% trans "Color" %}</label>
+            <div class="color-picker">
+                {% for color, label in available_colors %}
+                <label class="color-picker__option" title="{{ label }}">
+                    <input type="radio" name="color" value="{{ color }}" class="color-picker__radio" required>
+                    <span class="color-chip color-chip--{{ color }}"></span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn--primary">{% trans "Create tag" %}</button>
+    </form>
+</section>
+{% else %}
+<p class="tags-all-used">{% trans "All 8 colors are in use. Delete a tag to free up a color." %}</p>
+{% endif %}
+{% endblock %}

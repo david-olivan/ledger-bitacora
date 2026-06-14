@@ -1,0 +1,36 @@
+{% load i18n %}
+<div class="bucket-column" id="bucket-{{ bucket.pk }}">
+    <div class="bucket-column__header">{{ bucket.name }}</div>
+
+    <div class="bucket-column__tasks" id="tasks-list-{{ bucket.pk }}">
+        {% for task in bucket.active_tasks %}
+            {% include "workbench/partials/task_card.html" %}
+        {% empty %}
+            <p class="bucket-column__empty">{% trans "No active tasks." %}</p>
+        {% endfor %}
+    </div>
+
+    {% if bucket.completed_tasks %}
+    <details class="completed-section">
+        <summary class="completed-section__toggle">
+            {% trans "Completed" %} ({{ bucket.completed_tasks|length }})
+        </summary>
+        <div class="completed-section__tasks">
+            {% for task in bucket.completed_tasks %}
+                {% include "workbench/partials/task_card.html" %}
+            {% endfor %}
+        </div>
+    </details>
+    {% endif %}
+
+    <form class="add-task-form"
+          hx-post="{% url 'workbench:task_create' bucket.pk %}"
+          hx-target="#bucket-{{ bucket.pk }}"
+          hx-swap="outerHTML"
+          hx-on::after-request="this.reset()">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="{% trans "New task…" %}"
+               class="add-task-form__input" required>
+        <button type="submit" class="btn btn--small">+</button>
+    </form>
+</div>

@@ -1,9 +1,13 @@
 {% load i18n %}
-<div class="gantt">
+<div class="gantt {% if gantt_scale == 'year' %}gantt--year{% endif %}">
     <div class="gantt__nav">
         <a href="{{ gantt_prev }}" class="btn btn--small">&#8592;</a>
-        <h2 class="gantt__period">{{ gantt_month_name }} {{ gantt_year }}</h2>
+        <h2 class="gantt__period">{{ gantt_period_label }}</h2>
         <a href="{{ gantt_next }}" class="btn btn--small">&#8594;</a>
+        <div class="gantt__scale-toggle">
+            <a href="{{ gantt_month_link }}" class="btn btn--small {% if gantt_scale == 'month' %}btn--active{% endif %}">{% trans "Month" %}</a>
+            <a href="{{ gantt_year_link }}" class="btn btn--small {% if gantt_scale == 'year' %}btn--active{% endif %}">{% trans "Year" %}</a>
+        </div>
     </div>
 
     {% if gantt_tasks %}
@@ -11,8 +15,8 @@
         <div class="gantt__header-row">
             <div class="gantt__label-col"></div>
             <div class="gantt__days-ruler">
-                {% for day in gantt_days %}
-                <span class="gantt__day-tick{% if day == gantt_today.day and gantt_month == gantt_today.month and gantt_year == gantt_today.year %} gantt__day-tick--today{% endif %}">{{ day }}</span>
+                {% for col in gantt_cols %}
+                <span class="gantt__day-tick{% if col.today %} gantt__day-tick--today{% endif %}">{{ col.label }}</span>
                 {% endfor %}
             </div>
         </div>

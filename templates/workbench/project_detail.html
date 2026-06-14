@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{{ project.name }} — {% trans "The Workbench" %}{% endblock %}
+{% block title %}{{ project.name }} — {% trans "Ledger Bitácora" %}{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
@@ -21,7 +21,7 @@
 <div class="project-workspace">
     <div class="workspace-main">
         {% if active_view == 'calendar' %}
-            {% include "workbench/partials/calendar_placeholder.html" %}
+            {% include "workbench/partials/calendar_view.html" %}
         {% else %}
             {% include "workbench/partials/buckets_view.html" %}
         {% endif %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Projects" %} — {% trans "The Workbench" %}{% endblock %}
+{% block title %}{% trans "Projects" %} — {% trans "Ledger Bitácora" %}{% endblock %}
 
 {% block content %}
 <div class="projects-header">
@@ -25,17 +25,18 @@
         <a href="{% url 'workbench:project_detail' project.pk %}" class="project-card__name">{{ project.name }}</a>
 
         <div class="project-card__gauges">
+            <div class="gauge gauge--count" title="{% trans 'Total tasks' %}">
+                <span class="gauge__label">{{ project.total_tasks }}</span>
+                <span class="gauge__sublabel">{% trans "total" %}</span>
+            </div>
+            <div class="gauge gauge--count" title="{% trans 'Remaining tasks' %}">
+                <span class="gauge__label">{{ project.remaining_tasks }}</span>
+                <span class="gauge__sublabel">{% trans "left" %}</span>
+            </div>
             {% widthratio project.done_tasks project.total_tasks|default:1 360 as gauge_deg %}
             <div class="gauge gauge--arc" style="--gauge-deg: {{ gauge_deg }}deg" title="{% trans 'Completed tasks' %}">
-                <span class="gauge__label">{{ project.done_tasks }}/{{ project.total_tasks }}</span>
-            </div>
-            <div class="gauge gauge--count" title="{% trans 'Active tasks' %}">
-                <span class="gauge__label">{{ project.total_tasks }}</span>
-                <span class="gauge__sublabel">{% trans "tasks" %}</span>
-            </div>
-            <div class="gauge gauge--count" title="{% trans 'Buckets' %}">
-                <span class="gauge__label">{{ project.bucket_count }}</span>
-                <span class="gauge__sublabel">{% trans "cols" %}</span>
+                <span class="gauge__label">{{ project.done_tasks }}</span>
+                <span class="gauge__sublabel">{% trans "done" %}</span>
             </div>
         </div>
 

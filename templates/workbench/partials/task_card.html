@@ -1,15 +1,25 @@
 {% load i18n %}
-<div class="task-card {% if task.completed %}task-card--completed{% endif %}" id="task-{{ task.pk }}">
+<div class="task-card {% if task.completed %}task-card--completed{% endif %}"
+     id="task-{{ task.pk }}">
+
     <div class="task-card__header">
         <button class="task-card__complete-btn"
                 hx-post="{% url 'workbench:task_complete' task.pk %}"
                 hx-target="#bucket-{{ task.bucket_id }}"
                 hx-swap="outerHTML"
                 title="{% if task.completed %}{% trans 'Mark incomplete' %}{% else %}{% trans 'Mark complete' %}{% endif %}">
-            {% if task.completed %}✓{% else %}○{% endif %}
+            {% if task.completed %}✓{% endif %}
         </button>
         <span class="task-card__title">{{ task.title }}</span>
     </div>
+
+    {% if task.checklist_items.all %}
+    <ul class="task-card__checklist">
+        {% for item in task.checklist_items.all %}
+            {% include "workbench/partials/task_card_checklist_item.html" %}
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     {% if task.task_tags.all %}
     <div class="task-card__tags">
@@ -23,10 +33,13 @@
     <div class="task-card__date">{{ task.end_date|date:"d/m/Y" }}</div>
     {% endif %}
 
-    <button class="task-card__edit-btn"
-            hx-get="{% url 'workbench:task_detail' task.pk %}"
-            hx-target="#task-editor-panel"
-            hx-swap="innerHTML">
-        {% trans "Edit" %} →
-    </button>
+    <div class="task-card__footer">
+        <button class="task-card__edit-btn"
+                hx-get="{% url 'workbench:task_detail' task.pk %}"
+                hx-target="#task-modal-body"
+                hx-swap="innerHTML"
+                hx-on::after-request="document.getElementById('task-modal').classList.add('task-modal--open')">
+            {% trans "Edit" %}
+        </button>
+    </div>
 </div>

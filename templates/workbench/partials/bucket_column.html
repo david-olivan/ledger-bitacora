@@ -9,12 +9,23 @@
             <input class="bucket-column__title-input" name="name" value="{{ bucket.name }}"
                    aria-label="{% trans 'Column name' %}" required>
         </form>
-        <form method="post" action="{% url 'workbench:bucket_delete' bucket.pk %}"
-              onsubmit="return confirm('{% trans "Delete this column and all its tasks?" %}')">
+        <form method="post" action="{% url 'workbench:bucket_delete' bucket.pk %}">
             {% csrf_token %}
-            <button type="submit" class="bucket-column__delete" title="{% trans 'Delete column' %}">✕</button>
+            <button type="submit" class="bucket-column__delete" title="{% trans 'Delete column' %}"
+                    data-confirm="{% trans 'Delete this column and all its tasks?' %}">✕</button>
         </form>
     </div>
+
+    <form class="add-task-form"
+          hx-post="{% url 'workbench:task_create' bucket.pk %}"
+          hx-target="#bucket-{{ bucket.pk }}"
+          hx-swap="outerHTML"
+          hx-on::after-request="this.reset()">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="{% trans "New task…" %}"
+               class="add-task-form__input" required>
+        <button type="submit" class="btn btn--small">+</button>
+    </form>
 
     <div class="bucket-column__tasks" id="tasks-list-{{ bucket.pk }}">
         {% for task in bucket.active_tasks %}
@@ -36,15 +47,4 @@
         </div>
     </details>
     {% endif %}
-
-    <form class="add-task-form"
-          hx-post="{% url 'workbench:task_create' bucket.pk %}"
-          hx-target="#bucket-{{ bucket.pk }}"
-          hx-swap="outerHTML"
-          hx-on::after-request="this.reset()">
-        {% csrf_token %}
-        <input type="text" name="title" placeholder="{% trans "New task…" %}"
-               class="add-task-form__input" required>
-        <button type="submit" class="btn btn--small">+</button>
-    </form>
 </div>

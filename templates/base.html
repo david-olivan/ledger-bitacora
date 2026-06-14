@@ -44,15 +44,72 @@
     </aside>
     {% endif %}
 
-    <main class="main-content {% if not user.is_authenticated %}main-content--full{% endif %}">
+    <main class="main-content {% if not user.is_authenticated %}main-content--full{% endif %}{% block main_class %}{% endblock %}">
         {% block content %}{% endblock %}
     </main>
+
+    <div id="confirm-modal" class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-message">
+        <div class="confirm-modal__box">
+            <p id="confirm-modal-message" class="confirm-modal__message"></p>
+            <div class="confirm-modal__actions">
+                <button id="confirm-modal-cancel" type="button" class="btn">{% trans "Cancel" %}</button>
+                <button id="confirm-modal-ok" type="button" class="btn btn--danger">{% trans "Confirm" %}</button>
+            </div>
+        </div>
+    </div>
 
     {% block extra_scripts %}{% endblock %}
     <script>
     document.body.addEventListener('htmx:configRequest', function(e) {
         e.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
     });
+
+    (function() {
+        var modal = document.getElementById('confirm-modal');
+        var msgEl = document.getElementById('confirm-modal-message');
+        var okBtn = document.getElementById('confirm-modal-ok');
+        var cancelBtn = document.getElementById('confirm-modal-cancel');
+        var pendingCallback = null;
+
+        function closeConfirm() {
+            modal.classList.remove('confirm-modal--open');
+            pendingCallback = null;
+        }
+
+        window.askConfirm = function(message, onConfirm) {
+            msgEl.textContent = message;
+            pendingCallback = onConfirm;
+            modal.classList.add('confirm-modal--open');
+            cancelBtn.focus();
+        };
+
+        okBtn.addEventListener('click', function() {
+            var cb = pendingCallback;
+            closeConfirm();
+            if (cb) cb();
+        });
+        cancelBtn.addEventListener('click', closeConfirm);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeConfirm();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('confirm-modal--open')) closeConfirm();
+        });
+
+        document.addEventListener('htmx:confirm', function(e) {
+            if (!e.detail.question) return;
+            e.preventDefault();
+            askConfirm(e.detail.question, function() { e.detail.issueRequest(true); });
+        });
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-confirm]');
+            if (!btn) return;
+            e.preventDefault();
+            var form = btn.closest('form');
+            askConfirm(btn.dataset.confirm, function() { form.submit(); });
+        });
+    })();
     </script>
 </body>
 </html>

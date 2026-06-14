@@ -1,0 +1,12 @@
+{% load i18n %}
+<li class="task-card__checklist-item {% if item.checked %}task-card__checklist-item--checked{% endif %}"
+    id="checklist-item-{{ item.pk }}">
+    <button class="task-card__checklist-toggle"
+            hx-post="{% url 'workbench:checklist_item_toggle' item.pk %}?card=1"
+            hx-target="#checklist-item-{{ item.pk }}"
+            hx-swap="outerHTML"
+            type="button">
+        {% if item.checked %}✓{% endif %}
+    </button>
+    <span class="task-card__checklist-text">{{ item.text }}</span>
+</li>

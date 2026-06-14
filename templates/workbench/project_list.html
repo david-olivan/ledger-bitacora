@@ -43,15 +43,15 @@
         <div class="project-card__actions">
             <form method="post" action="{% url 'workbench:project_pin' project.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn--icon {% if project.pinned %}btn--active{% endif %}"
+                <button type="submit" class="btn btn--icon btn--round {% if project.pinned %}btn--active{% endif %}"
                         title="{% if project.pinned %}{% trans 'Unpin' %}{% else %}{% trans 'Pin' %}{% endif %}">
-                    {% if project.pinned %}★{% else %}☆{% endif %}
+                    {% if project.pinned %}⊛{% else %}⊙{% endif %}
                 </button>
             </form>
-            <form method="post" action="{% url 'workbench:project_delete' project.pk %}"
-                  onsubmit="return confirm('{% trans "Delete this project and all its data?" %}')">
+            <form method="post" action="{% url 'workbench:project_delete' project.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn--icon btn--danger" title="{% trans 'Delete' %}">✕</button>
+                <button type="submit" class="btn btn--icon btn--round btn--danger" title="{% trans 'Delete' %}"
+                        data-confirm="{% trans 'Delete this project and all its data?' %}">⊗</button>
             </form>
         </div>
     </article>

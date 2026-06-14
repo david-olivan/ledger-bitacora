@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{{ project.name }} — {% trans "Ledger Bitácora" %}{% endblock %}
+{% block main_class %} main-content--board{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
@@ -26,10 +27,10 @@
             {% include "workbench/partials/buckets_view.html" %}
         {% endif %}
     </div>
+</div>
 
-    <div class="task-editor-panel" id="task-editor-panel">
-        <p class="task-editor-panel__placeholder">{% trans "Select a task to edit it." %}</p>
-    </div>
+<div id="task-modal" class="task-modal" role="dialog" aria-modal="true">
+    <div class="task-modal__inner" id="task-modal-body"></div>
 </div>
 {% endblock %}
 
@@ -57,6 +58,37 @@
             }
         });
     });
+
+    var taskModal = document.getElementById('task-modal');
+
+    function openTaskModal() {
+        taskModal.classList.add('task-modal--open');
+    }
+
+    window.closeTaskModal = function(skipSave) {
+        if (!skipSave) {
+            var form = taskModal.querySelector('form.task-editor__form');
+            if (form) {
+                htmx.ajax('POST', form.getAttribute('hx-post'), {
+                    source: form,
+                    target: form.getAttribute('hx-target'),
+                    swap: form.getAttribute('hx-swap'),
+                    values: htmx.values(form),
+                });
+            }
+        }
+        taskModal.classList.remove('task-modal--open');
+    };
+
+    taskModal.addEventListener('click', function(e) {
+        if (e.target === taskModal) closeTaskModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && taskModal.classList.contains('task-modal--open')) closeTaskModal();
+    });
+
+
 })();
 </script>
 {% endblock %}

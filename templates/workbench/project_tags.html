@@ -20,10 +20,10 @@
             <input type="text" name="name" value="{{ tag.name }}" class="tag-row__input" required>
             <button type="submit" class="btn btn--small">{% trans "Rename" %}</button>
         </form>
-        <form method="post" action="{% url 'workbench:tag_delete' tag.pk %}" class="tag-row__delete"
-              onsubmit="return confirm('{% trans "Delete this tag?" %}')">
+        <form method="post" action="{% url 'workbench:tag_delete' tag.pk %}" class="tag-row__delete">
             {% csrf_token %}
-            <button type="submit" class="btn btn--icon btn--danger" title="{% trans 'Delete' %}">✕</button>
+            <button type="submit" class="btn btn--icon btn--danger" title="{% trans 'Delete' %}"
+                    data-confirm="{% trans 'Delete this tag?' %}">✕</button>
         </form>
     </div>
     {% endfor %}

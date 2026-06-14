@@ -308,6 +308,8 @@ def checklist_item_toggle(request, pk):
     item = get_object_or_404(ChecklistItem, pk=pk, task__bucket__project__owner=request.user)
     item.checked = not item.checked
     item.save()
+    if request.GET.get('card'):
+        return render(request, 'workbench/partials/task_card_checklist_item.html', {'item': item})
     return render(request, 'workbench/partials/checklist_item.html', {'item': item})
 
 

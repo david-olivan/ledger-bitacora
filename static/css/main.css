@@ -107,16 +107,30 @@ a:hover {
     margin-bottom: var(--space-xl);
 }
 
+.sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.sidebar__brand:hover {
+    text-decoration: none;
+}
+
+.sidebar__mark {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+}
+
 .sidebar__app-name {
     font-family: var(--font-heading);
     font-size: 1.15rem;
     color: var(--color-accent-dark);
-    display: block;
     line-height: 1.2;
 }
 
-.sidebar__app-name:hover {
-    text-decoration: none;
+.sidebar__brand:hover .sidebar__app-name {
     color: var(--color-accent);
 }
 
@@ -253,6 +267,14 @@ a:hover {
     box-shadow: 4px 4px 0 var(--color-accent-dark);
 }
 
+.login-logo {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    margin: 0 auto var(--space-lg);
+}
+
 .login-title {
     font-family: var(--font-heading);
     font-size: 2rem;
@@ -260,6 +282,18 @@ a:hover {
     margin-bottom: var(--space-lg);
     text-align: center;
     line-height: 1.1;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .login-error {

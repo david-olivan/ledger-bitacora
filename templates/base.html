@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% trans "The Workbench" %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/icon.svg' %}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
@@ -17,7 +18,10 @@
     {% if user.is_authenticated %}
     <aside class="sidebar">
         <div class="sidebar__logo">
-            <a href="{% url 'workbench:project_list' %}" class="sidebar__app-name">{% trans "The Workbench" %}</a>
+            <a href="{% url 'workbench:project_list' %}" class="sidebar__brand">
+                <img src="{% static 'img/icon.svg' %}" alt="" class="sidebar__mark" width="36" height="36">
+                <span class="sidebar__app-name">{% trans "The Workbench" %}</span>
+            </a>
         </div>
         <nav class="sidebar__nav">
             <a href="{% url 'workbench:project_list' %}" class="sidebar__link">{% trans "Projects" %}</a>

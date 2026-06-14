@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{% trans "Log in" %} — {% trans "The Workbench" %}{% endblock %}
 
 {% block content %}
 <div class="login-container">
-    <h1 class="login-title">{% trans "The Workbench" %}</h1>
+    <img src="{% static 'img/logo.svg' %}" alt="{% trans 'The Workbench' %}" class="login-logo">
+    <h1 class="login-title sr-only">{% trans "The Workbench" %}</h1>
     {% if form.errors %}
     <p class="login-error">{% trans "Incorrect credentials. Please try again." %}</p>
     {% endif %}

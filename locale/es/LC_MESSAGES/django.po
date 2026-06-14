@@ -1,4 +1,4 @@
-# Spanish (Spain) translations for The Workbench
+# Spanish (Spain) translations for Ledger Bitácora
 # Copyright (C) 2026 David Oliván Malagón
 # This file is distributed under the same license as the ledger-bitacora package.
 #
@@ -16,12 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# App name
-msgid "The Workbench"
-msgstr "El Taller"
-
-msgid "Workbench"
-msgstr "Taller"
+# App name (proper noun — identical in all languages)
+msgid "Ledger Bitácora"
+msgstr "Ledger Bitácora"
 
 # Navigation
 msgid "Projects"
@@ -305,3 +302,49 @@ msgstr "No hay tareas con fechas en este período."
 # Default bucket created with new project
 msgid "In Progress"
 msgstr "En progreso"
+
+# Sidebar — pinned projects
+msgid "Pinned"
+msgstr "Anclados"
+
+# Bucket management
+msgid "Column name"
+msgstr "Nombre de la columna"
+
+msgid "Delete this column and all its tasks?"
+msgstr "¿Eliminar esta columna y todas sus tareas?"
+
+msgid "Delete column"
+msgstr "Eliminar columna"
+
+msgid "New column…"
+msgstr "Nueva columna…"
+
+msgid "Column"
+msgstr "Columna"
+
+msgid "Maximum of 7 columns reached."
+msgstr "Máximo de 7 columnas alcanzado."
+
+# Project list — gauges
+msgid "Total tasks"
+msgstr "Tareas totales"
+
+msgid "Remaining tasks"
+msgstr "Tareas restantes"
+
+msgid "total"
+msgstr "total"
+
+msgid "left"
+msgstr "restan"
+
+msgid "done"
+msgstr "hechas"
+
+# Calendar / Gantt — scale toggle
+msgid "Month"
+msgstr "Mes"
+
+msgid "Year"
+msgstr "Año"

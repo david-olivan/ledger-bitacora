@@ -5,4 +5,15 @@
     {% empty %}
         <p class="buckets-empty">{% trans "No columns yet." %}</p>
     {% endfor %}
+
+    {% if buckets|length < 7 %}
+    <form class="add-bucket" method="post" action="{% url 'workbench:bucket_create' project.pk %}">
+        {% csrf_token %}
+        <input type="text" name="name" class="add-bucket__input"
+               placeholder="{% trans 'New column…' %}" required maxlength="255">
+        <button type="submit" class="btn btn--small">+ {% trans "Column" %}</button>
+    </form>
+    {% else %}
+    <p class="add-bucket add-bucket--full">{% trans "Maximum of 7 columns reached." %}</p>
+    {% endif %}
 </div>

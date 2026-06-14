@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/img/logo.svg" alt="The Workbench" width="380">
+  <img src="static/img/logo.svg" alt="Ledger Bitácora" width="380">
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## Overview
 
-**The Workbench** is a single-user, container-based project manager built as a
+**Ledger Bitácora** — *the inventor's logbook* — is a single-user, container-based project manager built as a
 bespoke alternative to Planner / Trello / GitHub Projects. The hierarchy is
 **Project → Bucket → Task**, with a drag-and-drop board view and a per-project
 calendar/Gantt view, all wrapped in a warm cream-paper, brass-and-copper

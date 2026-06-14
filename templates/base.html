@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% trans "The Workbench" %}{% endblock %}</title>
+    <title>{% block title %}{% trans "Ledger Bitácora" %}{% endblock %}</title>
     <link rel="icon" href="{% static 'img/icon.svg' %}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +20,19 @@
         <div class="sidebar__logo">
             <a href="{% url 'workbench:project_list' %}" class="sidebar__brand">
                 <img src="{% static 'img/icon.svg' %}" alt="" class="sidebar__mark" width="36" height="36">
-                <span class="sidebar__app-name">{% trans "The Workbench" %}</span>
+                <span class="sidebar__app-name">{% trans "Ledger Bitácora" %}</span>
             </a>
         </div>
         <nav class="sidebar__nav">
             <a href="{% url 'workbench:project_list' %}" class="sidebar__link">{% trans "Projects" %}</a>
+            {% if pinned_projects %}
+            <div class="sidebar__pinned">
+                <span class="sidebar__section-label">{% trans "Pinned" %}</span>
+                {% for project in pinned_projects %}
+                <a href="{% url 'workbench:project_detail' project.pk %}" class="sidebar__link sidebar__link--pinned">★ {{ project.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
         </nav>
         <div class="sidebar__bottom">
             <span class="sidebar__user">{{ user.username }}</span>

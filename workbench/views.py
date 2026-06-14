@@ -1,5 +1,5 @@
 import calendar as _cal
-from datetime import date as _date
+from datetime import date as _date, timedelta as _timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -18,7 +18,7 @@ def _annotated_projects(user):
     return Project.objects.filter(owner=user).annotate(
         total_tasks=Count('buckets__tasks', distinct=True),
         done_tasks=Count('buckets__tasks', filter=Q(buckets__tasks__completed=True), distinct=True),
-        bucket_count=Count('buckets', distinct=True),
+        remaining_tasks=Count('buckets__tasks', filter=Q(buckets__tasks__completed=False), distinct=True),
     )
 
 
@@ -33,17 +33,42 @@ def _get_bucket_with_tasks(bucket_pk):
 
 def _get_calendar_context(request, project):
     today = _date.today()
+    scale = request.GET.get('scale', 'month')
+    if scale not in ('month', 'year'):
+        scale = 'month'
     try:
         year = int(request.GET.get('year', today.year))
+    except (ValueError, TypeError):
+        year = today.year
+    try:
         month = int(request.GET.get('month', today.month))
         if not (1 <= month <= 12):
             month = today.month
     except (ValueError, TypeError):
-        year, month = today.year, today.month
+        month = today.month
 
-    _, days_in_month = _cal.monthrange(year, month)
-    period_start = _date(year, month, 1)
-    period_end = _date(year, month, days_in_month)
+    if scale == 'year':
+        period_start = _date(year, 1, 1)
+        period_end = _date(year, 12, 31)
+        period_label = str(year)
+        total_days = (period_end - period_start).days + 1
+        num_weeks = -(-total_days // 7)
+        today_week = (today.timetuple().tm_yday - 1) // 7 if today.year == year else None
+        cols = [{'label': str(i + 1), 'today': i == today_week} for i in range(num_weeks)]
+        prev_link = f'?view=calendar&scale=year&year={year - 1}'
+        next_link = f'?view=calendar&scale=year&year={year + 1}'
+    else:
+        _, days_in_month = _cal.monthrange(year, month)
+        period_start = _date(year, month, 1)
+        period_end = _date(year, month, days_in_month)
+        period_label = f'{_cal.month_name[month]} {year}'
+        total_days = days_in_month
+        is_current = today.year == year and today.month == month
+        cols = [{'label': str(d), 'today': is_current and d == today.day} for d in range(1, days_in_month + 1)]
+        prev_month_date = period_start - _timedelta(days=1)
+        next_month_date = period_end + _timedelta(days=1)
+        prev_link = f'?view=calendar&scale=month&year={prev_month_date.year}&month={prev_month_date.month}'
+        next_link = f'?view=calendar&scale=month&year={next_month_date.year}&month={next_month_date.month}'
 
     tasks = (
         Task.objects.filter(bucket__project=project, completed=False)
@@ -67,8 +92,10 @@ def _get_calendar_context(request, project):
             continue
         tt_list = list(task.task_tags.all())
         color = tt_list[0].tag.color if tt_list else 'brass'
-        left_pct = round((bar_start.day - 1) / days_in_month * 100, 2)
-        width_pct = round((bar_end.day - bar_start.day + 1) / days_in_month * 100, 2)
+        offset = (bar_start - period_start).days
+        span = (bar_end - bar_start).days + 1
+        left_pct = round(offset / total_days * 100, 2)
+        width_pct = round(span / total_days * 100, 2)
         gantt_tasks.append({
             'task': task,
             'color': color,
@@ -77,24 +104,17 @@ def _get_calendar_context(request, project):
             'bucket_name': task.bucket.name,
         })
 
-    if month == 1:
-        prev_year, prev_month = year - 1, 12
-    else:
-        prev_year, prev_month = year, month - 1
-    if month == 12:
-        next_year, next_month = year + 1, 1
-    else:
-        next_year, next_month = year, month + 1
-
     return {
+        'gantt_scale': scale,
         'gantt_year': year,
         'gantt_month': month,
-        'gantt_month_name': _cal.month_name[month],
-        'gantt_days': list(range(1, days_in_month + 1)),
+        'gantt_period_label': period_label,
+        'gantt_cols': cols,
         'gantt_tasks': gantt_tasks,
-        'gantt_prev': f'?view=calendar&year={prev_year}&month={prev_month}',
-        'gantt_next': f'?view=calendar&year={next_year}&month={next_month}',
-        'gantt_today': today,
+        'gantt_prev': prev_link,
+        'gantt_next': next_link,
+        'gantt_month_link': f'?view=calendar&scale=month&year={year}&month={month}',
+        'gantt_year_link': f'?view=calendar&scale=year&year={year}',
     }
 
 
@@ -158,6 +178,37 @@ def project_detail(request, pk):
     if active_view == 'calendar':
         ctx.update(_get_calendar_context(request, project))
     return render(request, 'workbench/project_detail.html', ctx)
+
+
+@login_required
+@require_POST
+def bucket_create(request, project_pk):
+    project = get_object_or_404(Project, pk=project_pk, owner=request.user)
+    name = request.POST.get('name', '').strip()
+    if name and project.buckets.count() < 7:
+        max_order = project.buckets.aggregate(m=Max('order'))['m'] or 0
+        Bucket.objects.create(project=project, name=name, order=max_order + 1)
+    return redirect('workbench:project_detail', pk=project.pk)
+
+
+@login_required
+@require_POST
+def bucket_rename(request, pk):
+    bucket = get_object_or_404(Bucket, pk=pk, project__owner=request.user)
+    name = request.POST.get('name', '').strip()
+    if name:
+        bucket.name = name
+        bucket.save(update_fields=['name'])
+    return render(request, 'workbench/partials/bucket_column.html', {'bucket': _get_bucket_with_tasks(bucket.pk)})
+
+
+@login_required
+@require_POST
+def bucket_delete(request, pk):
+    bucket = get_object_or_404(Bucket, pk=pk, project__owner=request.user)
+    project_pk = bucket.project_id
+    bucket.delete()
+    return redirect('workbench:project_detail', pk=project_pk)
 
 
 @login_required

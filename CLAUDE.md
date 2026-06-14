@@ -1,8 +1,8 @@
-# CLAUDE.md — The Workbench
+# CLAUDE.md — Ledger Bitácora
 
 ## Project overview
 
-A lightweight, self-hosted project and task management web app with a 1920s inventor's-workbench aesthetic (cream paper, typewriter type, brass/copper fittings). Single-user, container-based, deployed via Dokploy on a home lab.
+**Ledger Bitácora** (*the inventor's logbook*) is a lightweight, self-hosted project and task management web app with a 1920s inventor's-workbench aesthetic (cream paper, typewriter type, brass/copper fittings). Single-user, container-based, deployed via Dokploy on a home lab.
 
 **Hierarchy:** Project → Bucket → Task  
 **Stack:** Django 5.2 + PostgreSQL + HTMX + SortableJS + hand-rolled CSS  
@@ -63,16 +63,16 @@ entrypoint.sh            Container start: migrate → gunicorn
 1. [x] Django scaffold + Postgres connection
 2. [x] Docker: Dockerfile + docker-compose.yml
 3. [x] Models + migrations
-4. [ ] Auth: login screen, login-required on all views, admin model registration
-5. [ ] Projects grid view: cards with brass gauges, create / pin / delete
-6. [ ] Project detail shell + view-switcher toggle (Buckets ↔ Calendar)
-7. [ ] Buckets view: columns, task cards, task editor (field order below), completion section
-8. [ ] SortableJS drag-drop between/within buckets + HTMX position persist
-9. [ ] Tag management: 8 metallic colors, project-scoped, rename propagates everywhere
-10. [ ] Calendar/Gantt view: month (day columns) and year (week columns) grid
-11. [ ] Aesthetic pass: cream/paper, typewriter fonts, metallic accents, hand-drawn feel
-12. [ ] i18n: all strings wrapped, compilemessages wired into Docker build
-13. [ ] Deployment polish: WhiteNoise, env docs, superuser step, Dokploy notes
+4. [x] Auth: login screen, login-required on all views, admin model registration
+5. [x] Projects grid view: cards with brass gauges, create / pin / delete
+6. [x] Project detail shell + view-switcher toggle (Buckets ↔ Calendar)
+7. [x] Buckets view: columns, task cards, task editor (field order below), completion section
+8. [x] SortableJS drag-drop between/within buckets + HTMX position persist
+9. [x] Tag management: 8 metallic colors, project-scoped, rename propagates everywhere
+10. [x] Calendar/Gantt view: month (day columns) and year (week columns) grid
+11. [x] Aesthetic pass: cream/paper, typewriter fonts, metallic accents, hand-drawn feel
+12. [x] i18n: all strings wrapped, compilemessages wired into Docker build
+13. [x] Deployment polish: WhiteNoise, env docs, superuser step, Dokploy notes
 
 ## Business rules (enforced in view/form layer)
 
